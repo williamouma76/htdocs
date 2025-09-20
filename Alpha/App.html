@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow Pro - Plumbing Supplies & Services</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .hero-bg {
+            background: linear-gradient(rgba(14, 42, 71, 0.85), rgba(14, 42, 71, 0.9)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%23F5F7FA" width="100" height="100"/><path d="M0 50 L100 50 M50 0 L50 100" stroke="%23E5E7EB" stroke-width="2"/></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        .product-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
+        .category-filter { transition: all 0.3s ease; }
+        .category-filter:hover, .category-filter.active { background-color: #0E2A47; color: white; }
+        .cart-item { animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { opacity:0; transform:translateX(-20px);} to {opacity:1; transform:translateX(0);} }
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% {transform:scale(1);} 50% {transform:scale(1.05);} 100% {transform:scale(1);} }
+        input[type="file"] { display: block; margin-top: 5px; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Sticky Header -->
+    <header class="sticky top-0 z-50 bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="index.html" class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-blue-900 flex items-center justify-center text-white font-bold mr-2">AP</div>
+                    <span class="text-xl font-bold text-blue-900">AquaFlow Pro</span>
+                </a>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="Main1.html" class="text-gray-700 hover:text-blue-900 font-medium">Home</a>
+                <a href="shop.html" class="text-blue-900 font-medium border-b-2 border-blue-900">Shop</a>
+                <a href="services.html" class="text-gray-700 hover:text-blue-900 font-medium">Services</a>
+                <a href="about.html" class="text-gray-700 hover:text-blue-900 font-medium">About</a>
+                <a href="contact.html" class="text-gray-700 hover:text-blue-900 font-medium">Contact</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <a href="tel:+254791563869" class="hidden md:block text-gray-700 hover:text-blue-900 font-medium">+254791563869</a>
+                <div class="relative">
+                    <button id="cart-btn" class="text-gray-700 hover:text-blue-900 relative">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                    </button>
+                    <div id="cart-dropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-50 hidden max-h-[70vh] flex flex-col">
+                        <div class="p-4 border-b">
+                            <h3 class="font-semibold text-blue-900">Your Cart</h3>
+                        </div>
+                        <div id="cart-items" class="flex-1 overflow-y-auto p-4">
+                            <p class="text-gray-500 text-center py-4">Your cart is empty</p>
+                        </div>
+                        <div class="p-4 border-t bg-gray-50">
+                            <div class="flex justify-between mb-4">
+                                <span class="font-medium">Total:</span>
+                                <span id="cart-total" class="font-bold">KES 0.00</span>
+                            </div>
+                            <a href="checkout.html" class="block w-full bg-orange-500 hover:bg-orange-600 text-white text-center font-medium py-2 px-4 rounded-lg transition duration-300">
+                                Checkout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="md:hidden text-blue-900"><i class="fas fa-bars text-xl"></i></button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-bg text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">Plumbing Supplies & Equipment</h1>
+            <p class="text-xl mb-8">Quality tools, parts, and supplies for all your plumbing needs</p>
+            <div class="max-w-2xl mx-auto relative">
+                <input type="text" placeholder="Search for products..." id="search-input" class="w-full py-3 px-4 pr-12 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <i class="fas fa-search absolute right-4 top-3.5 text-gray-400"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-blue-900 mb-4">Shop by Category</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <a href="#Tools" class="category-filter active p-6 bg-blue-50 rounded-lg text-center transition duration-300">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-tools text-2xl text-blue-900"></i>
+                    </div>
+                    <h3 class="font-semibold text-blue-900">Tools</h3>
+                </a>
+                <a href="#Pipes" class="category-filter p-6 bg-blue-50 rounded-lg text-center transition duration-300">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-pipe text-2xl text-blue-900"></i>
+                    </div>
+                    <h3 class="font-semibold text-blue-900">Pipes</h3>
+                </a>
+                <a href="#Fixtures" class="category-filter p-6 bg-blue-50 rounded-lg text-center transition duration-300">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-faucet text-2xl text-blue-900"></i>
+                    </div>
+                    <h3 class="font-semibold text-blue-900">Fixtures</h3>
+                </a>
+                <a href="#Valves" class="category-filter p-6 bg-blue-50 rounded-lg text-center transition duration-300">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-compress-alt text-2xl text-blue-900"></i>
+                    </div>
+                    <h3 class="font-semibold text-blue-900">Valves</h3>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-blue-900 mb-4">Featured Products</h2>
+            <div id="featured-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Products loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- All Products -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-blue-900 mb-4">All Products</h2>
+            <div id="all-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Products loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 AquaFlow Pro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let cart = [];
+            const cartCount = document.getElementById('cart-count');
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            const cartBtn = document.getElementById('cart-btn');
+            const cartDropdown = document.getElementById('cart-dropdown');
+
+            function updateCartDropdown() {
+                if(cart.length===0){
+                    cartItems.innerHTML='<p class="text-gray-500 text-center py-4">Your cart is empty</p>';
+                    cartTotal.textContent='KES 0.00';
+                    return;
+                }
+                let html=''; let total=0;
+                cart.forEach(item=>{
+                    html+=`
+                    <div class="cart-item flex justify-between items-center mb-4 pb-4 border-b">
+                        <div><h4 class="font-medium text-blue-900">${item.product}</h4><p class="text-gray-600 text-sm">KES ${item.price.toLocaleString()}</p></div>
+                        <button class="remove-from-cart text-red-500 hover:text-red-700" data-product="${item.product}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>`;
+                    total+=item.price;
+                });
+                cartItems.innerHTML=html;
+                cartTotal.textContent=`KES ${total.toLocaleString()}`;
+
+                document.querySelectorAll('.remove-from-cart').forEach(btn=>{
+                    btn.addEventListener('click', function(){
+                        const p=this.getAttribute('data-product');
+                        const idx=cart.findIndex(i=>i.product===p);
+                        if(idx!==-1){ cart.splice(idx,1); updateCartDropdown(); cartCount.textContent=cart.length;}
+                    });
+                });
+            }
+
+            cartBtn.addEventListener('click', ()=>cartDropdown.classList.toggle('hidden'));
+            document.addEventListener('click', e=>{if(!cartDropdown.contains(e.target)&&!cartBtn.contains(e.target)) cartDropdown.classList.add('hidden');});
+            cartDropdown.addEventListener('click', e=>e.stopPropagation());
+
+            document.querySelectorAll('.add-to-cart').forEach(btn=>{
+                btn.addEventListener('click', function(){
+                    const product=this.dataset.product;
+                    const price=parseInt(this.dataset.price);
+                    cart.push({product,price});
+                    cartCount.textContent=cart.length;
+                    updateCartDropdown();
+                });
+            });
+
+            // Load products from localStorage
+            function loadProducts() {
+                const products = JSON.parse(localStorage.getItem('admin_products') || '[]');
+                const featuredContainer = document.getElementById('featured-products');
+                const allContainer = document.getElementById('all-products');
+                if(products.length===0){
+                    featuredContainer.innerHTML='<p class="text-gray-500 text-center col-span-full">No products yet</p>';
+                    allContainer.innerHTML='<p class="text-gray-500 text-center col-span-full">No products yet</p>';
+                    return;
+                }
+
+                featuredContainer.innerHTML = products.filter(p=>p.featured).map(p=>`
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="aspect-w-1 aspect-h-1 bg-blue-100 flex items-center justify-center">
+                            <img src="${p.image}" class="h-32 object-contain" alt="${p.name}">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg text-blue-900 mb-2">${p.name}</h3>
+                            <p class="text-gray-600 text-sm mb-4">${p.description}</p>
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-blue-900">KES ${p.price}</span>
+                                <button class="add-to-cart bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-lg transition duration-300" data-product="${p.name}" data-price="${p.price}">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>`).join('');
+
+                allContainer.innerHTML = products.map(p=>`
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="aspect-w-1 aspect-h-1 bg-blue-100 flex items-center justify-center">
+                            <img src="${p.image}" class="h-32 object-contain" alt="${p.name}">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg text-blue-900 mb-2">${p.name}</h3>
+                            <p class="text-gray-600 text-sm mb-4">${p.description}</p>
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-blue-900">KES ${p.price}</span>
+                                <button class="add-to-cart bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-lg transition duration-300" data-product="${p.name}" data-price="${p.price}">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>`).join('');
+
+                // Re-bind add to cart buttons
+                document.querySelectorAll('.add-to-cart').forEach(btn=>{
+                    btn.addEventListener('click', function(){
+                        const product=this.dataset.product;
+                        const price=parseInt(this.dataset.price);
+                        cart.push({product,price});
+                        cartCount.textContent=cart.length;
+                        updateCartDropdown();
+                    });
+                });
+            }
+
+            // Initial load
+            loadProducts();
+
+            // Listen for live updates from admin panel
+            window.addEventListener('productsUpdated', loadProducts);
+
+            // Also support other tabs using storage event
+            window.addEventListener('storage', e=>{
+                if(e.key==='admin_products') loadProducts();
+            });
+        });
+    </script>
+</body>
+</html>

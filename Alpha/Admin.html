@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AquaFlow Pro Admin Panel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
+img { max-height: 80px; border-radius: 6px; }
+</style>
+</head>
+<body class="p-6">
+
+<h1 class="text-3xl font-bold text-blue-900 mb-6">AquaFlow Pro - Admin Panel</h1>
+
+<!-- FEATURE MANAGEMENT -->
+<section class="mb-12">
+  <h2 class="text-2xl font-semibold mb-4">Manage Features</h2>
+  <form id="featureForm" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+    <input type="text" id="featureTitle" placeholder="Feature Title" class="p-2 border rounded">
+    <input type="file" id="featureImageFile" accept="image/*" class="p-2 border rounded">
+    <textarea id="featureDescription" placeholder="Description" class="p-2 border rounded"></textarea>
+    <button type="submit" class="bg-blue-900 text-white py-2 px-4 rounded col-span-full hover:bg-blue-700">Add Feature</button>
+  </form>
+  <div id="featuresList" class="space-y-2"></div>
+</section>
+
+<!-- PRODUCT MANAGEMENT -->
+<section>
+  <h2 class="text-2xl font-semibold mb-4">Manage Products</h2>
+  <form id="productForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+    <input type="text" id="productName" placeholder="Product Name" class="p-2 border rounded">
+    <input type="number" id="productPrice" placeholder="Price (KES)" class="p-2 border rounded">
+    <select id="productCategory" class="p-2 border rounded">
+      <option value="">Select Category</option>
+      <option value="Tools">Tools</option>
+      <option value="Pipes">Pipes</option>
+      <option value="Fixtures">Fixtures</option>
+      <option value="Valves">Valves</option>
+    </select>
+    <input type="file" id="productImageFile" accept="image/*" class="p-2 border rounded">
+    <button type="submit" class="bg-orange-500 text-white py-2 px-4 rounded col-span-full hover:bg-orange-600">Add Product</button>
+  </form>
+
+  <div id="productsList" class="space-y-2"></div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Load data from localStorage
+  let features = JSON.parse(localStorage.getItem('admin_features')) || [];
+  let products = JSON.parse(localStorage.getItem('admin_products')) || [];
+
+  const featuresList = document.getElementById('featuresList');
+  const productsList = document.getElementById('productsList');
+
+  // Render Features
+  function renderFeatures() {
+    featuresList.innerHTML = features.length ? features.map((f,i) => `
+      <div class="flex justify-between items-center p-2 border rounded">
+        <span>
+          <strong>${f.title}</strong> - ${f.description}
+          ${f.image ? `<img src="${f.image}" class="inline ml-2"/>` : ''}
+        </span>
+        <button class="delete-feature bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded" data-index="${i}"><i class="fas fa-trash"></i></button>
+      </div>
+    `).join('') : '<p class="text-gray-500">No features added yet.</p>';
+
+    document.querySelectorAll('.delete-feature').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const i = e.target.closest('button').dataset.index;
+        features.splice(i,1);
+        localStorage.setItem('admin_features', JSON.stringify(features));
+        renderFeatures();
+      });
+    });
+  }
+
+  // Render Products
+  function renderProducts() {
+    productsList.innerHTML = products.length ? products.map((p,i) => `
+      <div class="flex justify-between items-center p-2 border rounded">
+        <span>
+          <strong>${p.name}</strong> - KES ${p.price} [${p.category}]
+          ${p.image ? `<img src="${p.image}" class="inline ml-2"/>` : ''}
+        </span>
+        <div class="space-x-2">
+          <button class="edit-product bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded" data-index="${i}"><i class="fas fa-edit"></i></button>
+          <button class="delete-product bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded" data-index="${i}"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    `).join('') : '<p class="text-gray-500">No products added yet.</p>';
+
+    document.querySelectorAll('.delete-product').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const i = e.target.closest('button').dataset.index;
+        products.splice(i,1);
+        localStorage.setItem('admin_products', JSON.stringify(products));
+        renderProducts();
+      });
+    });
+
+    document.querySelectorAll('.edit-product').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const i = e.target.closest('button').dataset.index;
+        const p = products[i];
+        const name = prompt("Product Name:", p.name);
+        if(!name) return;
+        const price = prompt("Product Price:", p.price);
+        if(!price) return;
+        const category = prompt("Category (Tools, Pipes, Fixtures, Valves):", p.category);
+        if(!category) return;
+        products[i] = {...p, name, price, category};
+        localStorage.setItem('admin_products', JSON.stringify(products));
+        renderProducts();
+      });
+    });
+  }
+
+  // Add Feature
+  document.getElementById('featureForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const title = document.getElementById('featureTitle').value;
+    const description = document.getElementById('featureDescription').value;
+    const fileInput = document.getElementById('featureImageFile');
+
+    if(title && description && fileInput.files.length){
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(event){
+        const imageBase64 = event.target.result;
+        features.push({title, description, image: imageBase64});
+        localStorage.setItem('admin_features', JSON.stringify(features));
+        renderFeatures();
+        e.target.reset();
+      }
+      reader.readAsDataURL(file);
+    } else alert("Please provide title, description, and an image.");
+  });
+
+  // Add Product
+  document.getElementById('productForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const name = document.getElementById('productName').value;
+    const price = document.getElementById('productPrice').value;
+    const category = document.getElementById('productCategory').value;
+    const fileInput = document.getElementById('productImageFile');
+
+    if(name && price && category && fileInput.files.length){
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = function(event){
+        const imageBase64 = event.target.result;
+        products.push({name, price, category, image: imageBase64});
+        localStorage.setItem('admin_products', JSON.stringify(products));
+        renderProducts();
+        e.target.reset();
+      }
+      reader.readAsDataURL(file);
+    } else alert("Please fill all fields and select an image.");
+  });
+
+  // Initial render
+  renderFeatures();
+  renderProducts();
+});
+</script>
+</body>
+</html>
